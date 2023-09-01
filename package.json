@@ -5,9 +5,9 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "wrangler pages dev ./ --local"
+    "dev": "wrangler pages dev ./ --local --kv=CONFIG"
   },
-  "author": "",
+  "author": "lrhtony",
   "license": "ISC",
   "dependencies": {
     "wrangler": "^3.4.0"
