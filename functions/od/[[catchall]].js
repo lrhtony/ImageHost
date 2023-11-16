@@ -3,7 +3,7 @@ import config from "../config/default";
 
 export async function onRequest(context) {
     const access_token = await getAccessToken(context)
-    if (context.params.catchall[0].length !== 34) {
+    if (!/^[a-zA-Z0-9]{34}$/.test(context.params.catchall[0])) {
         return new Response(JSON.stringify({
             error: {
                 code: 'invalidRequest',
