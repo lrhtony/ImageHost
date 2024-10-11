@@ -26,6 +26,7 @@ export async function onRequest(context) {
     if (res.ok) {
         return new Response(res.body, {
             headers: {
+                'Content-Disposition': res.headers.get('Content-Disposition'),
                 'Content-Type': res.headers.get('Content-Type'),
                 'Cache-Control': 'public, max-age=31536000, immutable',
                 'Access-Control-Allow-Origin': '*'
