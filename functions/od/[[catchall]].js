@@ -29,9 +29,12 @@ export async function onRequest(context) {
         let content_disposition = res.headers.get('Content-Disposition');
         let content_type = res.headers.get('Content-Type');
 
-        if (content_disposition && /\.(jpg|jpeg|png|gif|bmp|webp|svg)$/.test(content_disposition)) {
-            content_type = 'image/' + content_disposition.split('.').pop();
+        const extensionMatch = content_disposition.match(/\.(jpg|jpeg|png|gif|bmp|webp|svg)/i);
+        if (extensionMatch) {
             content_disposition = content_disposition.replace('attachment', 'inline');
+            if (content_type === 'application/octet-stream') {
+                content_type = 'image/' + extensionMatch[1];
+            }
         }
 
         if (content_length < 1024 * 1024 * 5) {
