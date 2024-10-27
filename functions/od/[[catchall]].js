@@ -23,8 +23,16 @@ export async function onRequest(context) {
         },
         redirect: 'follow'
     })
+    const { readable, writable } = new TransformStream({
+        transform(chunk, controller) {
+            controller.enqueue(chunk);
+        },
+    });
+
+    res.body.pipeTo(writable);
+
     if (res.ok) {
-        return new Response(res.body, {
+        return new Response(readable, {
             headers: {
                 'Content-Disposition': res.headers.get('Content-Disposition'),
                 'Content-Length': res.headers.get('Content-Length'),
@@ -50,7 +58,7 @@ export async function onRequest(context) {
             })
         }
         else {
-            return new Response(res.body, {
+            return new Response(readable, {
                 status: res.status,
                 headers: {
                     'Content-Type': res.headers.get('Content-Type'),

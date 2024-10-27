@@ -10,6 +10,6 @@
   "author": "lrhtony",
   "license": "ISC",
   "dependencies": {
-    "wrangler": "^3.19.0"
+    "wrangler": "^3.83.0"
   }
 }
