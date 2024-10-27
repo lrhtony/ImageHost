@@ -23,24 +23,45 @@ export async function onRequest(context) {
         },
         redirect: 'follow'
     })
-    const { readable, writable } = new TransformStream({
-        transform(chunk, controller) {
-            controller.enqueue(chunk);
-        },
-    });
-
-    res.body.pipeTo(writable);
 
     if (res.ok) {
-        return new Response(readable, {
-            headers: {
-                'Content-Disposition': res.headers.get('Content-Disposition'),
-                'Content-Length': res.headers.get('Content-Length'),
-                'Content-Type': res.headers.get('Content-Type'),
-                'Cache-Control': 'public, max-age=31536000, immutable',
-                'Access-Control-Allow-Origin': '*'
-            }
-        })
+        let content_length = res.headers.get('Content-Length')
+        let content_disposition = res.headers.get('Content-Disposition');
+        let content_type = res.headers.get('Content-Type');
+
+        if (content_disposition && /\.(jpg|jpeg|png|gif|bmp|webp|svg)$/.test(content_disposition)) {
+            content_type = 'image/' + content_disposition.split('.').pop();
+            content_disposition = content_disposition.replace('attachment', 'inline');
+        }
+
+        if (content_length < 1024 * 1024 * 5) {
+            return new Response(res.body, {
+                headers: {
+                    'Content-Disposition': content_disposition,
+                    'Content-Length': content_length,
+                    'Content-Type': content_type,
+                    'Cache-Control': 'public, max-age=31536000, immutable',
+                    'Access-Control-Allow-Origin': '*'
+                }
+            })
+        }
+        else {
+            const { readable, writable } = new TransformStream({
+                transform(chunk, controller) {
+                    controller.enqueue(chunk);
+                },
+            });
+            res.body.pipeTo(writable);
+            return new Response(readable, {
+                headers: {
+                    'Content-Disposition': content_disposition,
+                    'Content-Type': content_type,
+                    'Cache-Control': 'public, max-age=31536000, immutable',
+                    'Access-Control-Allow-Origin': '*'
+                }
+            })
+        }
+
     }
     else {
         if (res.status === 404) {
