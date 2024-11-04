@@ -17,7 +17,8 @@ export async function getAccessToken(context) {
         method: 'POST',
         body: `client_id=${context.env.CLIENT_ID}&redirect_uri=${context.env.REDIRECT_URI}&client_secret=${context.env.CLIENT_SECRET}&refresh_token=${access.refresh_token}&grant_type=refresh_token`,
         headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'User-Agent': 'ImageHost(@lrhtony)/1.1'
         }
     })
 

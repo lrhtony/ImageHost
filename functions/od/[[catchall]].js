@@ -20,6 +20,7 @@ export async function onRequest(context) {
     const res = await fetch(`${config.apiEndpoint.graph}/me/drive/items/${context.params.catchall[0]}/content`, {
         headers: {
             'Authorization': 'Bearer ' + access_token,
+            'User-Agent': 'ImageHost(@lrhtony)/1.1'
         },
         redirect: 'follow'
     })
